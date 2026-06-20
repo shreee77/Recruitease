@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>Feedback – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+  .star-rating { display:flex; flex-direction:row-reverse; gap:6px; justify-content:flex-end; }
+  .star-rating input { display:none; }
+  .star-rating label { font-size:2rem; color:#dee2e6; cursor:pointer; transition:color .15s; }
+  .star-rating input:checked ~ label,
+  .star-rating label:hover,
+  .star-rating label:hover ~ label { color:#f4a261; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/student/dashboard"    class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/student/jobs"         class="nav-item"><i class="fa fa-briefcase"></i> Browse Jobs</a>
+      <a href="/student/applications" class="nav-item"><i class="fa fa-file-alt"></i> My Applications</a>
+      <a href="/student/profile"      class="nav-item"><i class="fa fa-user-circle"></i> Profile &amp; Resume</a>
+      <a href="/student/feedback"     class="nav-item active"><i class="fa fa-star"></i> Give Feedback</a>
+      <a href="/logout"               class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-left"><h5>Give Feedback</h5></div></div>
+    <div class="page-content">
+      <div th:if="${success}" class="alert alert-success"><i class="fa fa-circle-check"></i> <span th:text="${success}"></span></div>
+      <div class="card" style="max-width:560px;">
+        <div class="card-header"><h5><i class="fa fa-star" style="color:var(--primary);margin-right:8px;"></i>Rate your experience</h5></div>
+        <div class="card-body">
+          <form th:action="@{/student/feedback/submit}" method="post">
+            <div class="form-group">
+              <label class="form-label">Rating *</label>
+              <div class="star-rating">
+                <input type="radio" id="s5" name="rating" value="5"/><label for="s5">★</label>
+                <input type="radio" id="s4" name="rating" value="4"/><label for="s4">★</label>
+                <input type="radio" id="s3" name="rating" value="3" checked/><label for="s3">★</label>
+                <input type="radio" id="s2" name="rating" value="2"/><label for="s2">★</label>
+                <input type="radio" id="s1" name="rating" value="1"/><label for="s1">★</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your Feedback *</label>
+              <textarea name="message" class="form-control" rows="5" required
+                        placeholder="Share your experience with RecruitEase..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100"><i class="fa fa-paper-plane"></i> Submit Feedback</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

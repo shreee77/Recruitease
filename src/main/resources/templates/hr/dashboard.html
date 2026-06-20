@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>HR Dashboard – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Main</div>
+      <a href="/hr/dashboard"  class="nav-item active"><i class="fa fa-gauge"></i> Dashboard</a>
+      <div class="nav-label">Recruitment</div>
+      <a href="/hr/jobs"       class="nav-item"><i class="fa fa-briefcase"></i> My Jobs</a>
+      <a href="/hr/jobs/new"   class="nav-item"><i class="fa fa-plus-circle"></i> Post Job</a>
+      <a href="/hr/applicants" class="nav-item"><i class="fa fa-users"></i> Applicants</a>
+      <div class="nav-label">Company</div>
+      <a href="/hr/company"    class="nav-item"><i class="fa fa-building"></i> Company Profile</a>
+      <div class="nav-label">Account</div>
+      <a href="/hr/profile"    class="nav-item"><i class="fa fa-user-circle"></i> Profile</a>
+      <a href="/logout"        class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="avatar" th:text="${#strings.substring(hr.fullName,0,1)}">H</div>
+        <div>
+          <div style="font-size:.82rem;font-weight:700;" th:text="${hr.fullName}">HR Name</div>
+          <div style="font-size:.72rem;opacity:.6;" th:text="${hr.company != null ? hr.company.companyName : 'HR'}">Company</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><h5>HR Dashboard</h5></div>
+      <div class="topbar-right">
+        <a href="/hr/jobs/new" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Post Job</a>
+        <a href="/logout" class="btn btn-outline btn-sm"><i class="fa fa-sign-out-alt"></i> Logout</a>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div th:if="${success}" class="alert alert-success"><i class="fa fa-circle-check"></i> <span th:text="${success}"></span></div>
+
+      <div class="page-header">
+        <div>
+          <div class="page-title">Welcome, <span th:text="${hr.fullName}">HR</span>!</div>
+          <div class="page-subtitle" th:text="${hr.company != null ? hr.company.companyName : ''}"></div>
+        </div>
+      </div>
+
+      <div class="stat-grid mb-4">
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="fa fa-briefcase"></i></div>
+          <div><div class="stat-value" th:text="${totalJobs}">0</div><div class="stat-label">My Jobs</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon red"><i class="fa fa-file-alt"></i></div>
+          <div><div class="stat-value" th:text="${totalApplicants}">0</div><div class="stat-label">Total Applicants</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon teal"><i class="fa fa-star"></i></div>
+          <div><div class="stat-value" th:text="${shortlisted}">0</div><div class="stat-label">Shortlisted</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fa fa-check-circle"></i></div>
+          <div><div class="stat-value" th:text="${selected}">0</div><div class="stat-label">Selected</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h5><i class="fa fa-calendar-day" style="color:var(--primary);margin-right:8px;"></i>Today's Job Postings</h5>
+          <a href="/hr/jobs/new" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Post New</a>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Title</th><th>Location</th><th>Type</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr th:each="j : ${todaysJobs}">
+                  <td><strong th:text="${j.title}"></strong></td>
+                  <td th:text="${j.location != null ? j.location : '-'}"></td>
+                  <td th:text="${j.jobType != null ? j.jobType : '-'}"></td>
+                  <td><span th:class="${'badge badge-' + j.status.name().toLowerCase()}" th:text="${j.status}"></span></td>
+                  <td>
+                    <a th:href="@{/hr/jobs/{id}/applicants(id=${j.id})}" class="btn btn-outline btn-sm">
+                      <i class="fa fa-users"></i> Applicants
+                    </a>
+                  </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(todaysJobs)}">
+                  <td colspan="5" class="text-center text-muted" style="padding:24px;">No jobs posted today.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

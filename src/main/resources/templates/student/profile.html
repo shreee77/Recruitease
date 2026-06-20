@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>My Profile – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/student/dashboard"    class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/student/jobs"         class="nav-item"><i class="fa fa-briefcase"></i> Browse Jobs</a>
+      <a href="/student/applications" class="nav-item"><i class="fa fa-file-alt"></i> My Applications</a>
+      <a href="/student/profile"      class="nav-item active"><i class="fa fa-user-circle"></i> Profile &amp; Resume</a>
+      <a href="/student/feedback"     class="nav-item"><i class="fa fa-star"></i> Give Feedback</a>
+      <a href="/logout"               class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-left"><h5>My Profile &amp; Resume</h5></div></div>
+    <div class="page-content">
+      <div th:if="${success}" class="alert alert-success"><i class="fa fa-circle-check"></i> <span th:text="${success}"></span></div>
+      <div th:if="${error}"   class="alert alert-danger"><i class="fa fa-circle-exclamation"></i> <span th:text="${error}"></span></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+
+        <!-- Profile Form -->
+        <div class="card">
+          <div class="card-header"><h5><i class="fa fa-user" style="color:var(--primary);margin-right:8px;"></i>Personal Info</h5></div>
+          <div class="card-body">
+            <form th:action="@{/student/profile/update}" method="post" enctype="multipart/form-data">
+              <div class="form-group">
+                <label class="form-label">Full Name *</label>
+                <input type="text" name="fullName" class="form-control" th:value="${student.fullName}" required/>
+              </div>
+              <div class="form-row cols-2">
+                <div class="form-group">
+                  <label class="form-label">Phone</label>
+                  <input type="text" name="phone" class="form-control" th:value="${student.phone}"/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">CGPA</label>
+                  <input type="number" name="cgpa" class="form-control" th:value="${student.cgpa}" step="0.1" min="0" max="10"/>
+                </div>
+              </div>
+              <div class="form-row cols-2">
+                <div class="form-group">
+                  <label class="form-label">Branch</label>
+                  <select name="branch" class="form-control">
+                    <option value="">Select Branch</option>
+                    <option th:each="b : ${ {'Computer Science','Information Technology','Electronics','Mechanical','Civil','Electrical','MBA','BCA','MCA','Other'} }"
+                            th:value="${b}" th:text="${b}"
+                            th:selected="${student.branch != null and student.branch == b}"></option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Graduation Year</label>
+                  <input type="number" name="graduationYear" class="form-control" th:value="${student.graduationYear}" min="2020" max="2030"/>
+                </div>
+              </div>
+             <!-- <div class="form-group">
+                <label class="form-label">College Name</label>
+                <input type="text" name="collegeName" class="form-control" th:value="${student.collegeName}"/>
+              </div> -->
+              <div class="form-group">
+                <label class="form-label">Department</label>
+                <input type="text" name="department" class="form-control" th:value="${student.department}" placeholder="e.g. Dept of Computer Engineering"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Skills </label>
+                <input type="text" name="skills" class="form-control" th:value="${student.skills}" placeholder="e.g. Java, Python, MySQL"/>
+              </div>
+
+              <!-- Resume Upload -->
+              <div class="form-group">
+                <label class="form-label">
+                  Resume (PDF/DOC)
+                  <span th:if="${student.resumePath != null}" class="badge badge-active" style="margin-left:6px;">Uploaded</span>
+                  <span th:unless="${student.resumePath != null}" class="badge badge-inactive" style="margin-left:6px;">Not Uploaded</span>
+                </label>
+                <input type="file" name="resume" class="form-control" accept=".pdf,.doc,.docx"/>
+                <small class="text-muted">Max 5MB. Leave blank to keep existing resume.</small>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100">
+                <i class="fa fa-save"></i> Save Profile
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Profile Summary -->
+        <div>
+          <div class="card">
+            <div class="card-header"><h5>Profile Summary</h5></div>
+            <div class="card-body">
+              <div style="text-align:center;margin-bottom:20px;">
+                <div style="width:72px;height:72px;background:var(--primary);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:1.8rem;color:#fff;font-weight:800;"
+                     th:text="${#strings.substring(student.fullName,0,1)}">S</div>
+                <h3 style="margin-top:12px;font-size:1.1rem;" th:text="${student.fullName}"></h3>
+                <p class="text-muted" th:text="${student.email}"></p>
+              </div>
+
+              <table style="width:100%;border-collapse:collapse;font-size:.88rem;">
+                <tr><td class="text-muted" style="padding:8px 0;width:45%;">Branch</td>
+                    <td th:text="${student.branch != null ? student.branch : '-'}"></td></tr>
+                <!-- <tr><td class="text-muted" style="padding:8px 0;">College</td>
+                    <td th:text="${student.collegeName != null ? student.collegeName : '-'}"></td></tr> -->
+                <tr><td class="text-muted" style="padding:8px 0;">CGPA</td>
+                    <td th:text="${student.cgpa != null ? student.cgpa : '-'}"></td></tr>
+                <tr><td class="text-muted" style="padding:8px 0;">Grad Year</td>
+                    <td th:text="${student.graduationYear != null ? student.graduationYear : '-'}"></td></tr>
+                <tr><td class="text-muted" style="padding:8px 0;">Skills</td>
+                    <td th:text="${student.skills != null ? student.skills : '-'}"></td></tr>
+                <tr><td class="text-muted" style="padding:8px 0;">Resume</td>
+                    <td>
+                      <span th:if="${student.resumePath != null}" style="color:var(--success);font-weight:600;">✓ Uploaded</span>
+                      <span th:unless="${student.resumePath != null}" style="color:var(--danger);">✗ Not Uploaded</span>
+                    </td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <div class="card-header"><h5>Tips</h5></div>
+            <div class="card-body">
+              <ul style="padding-left:18px;line-height:2;font-size:.87rem;color:var(--text-muted);">
+                <li>Upload a PDF resume for best results.</li>
+                <li>Add your skills to get better job matches.</li>
+                <li>Keep your CGPA updated.</li>
+                <li>Apply before the last date!</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

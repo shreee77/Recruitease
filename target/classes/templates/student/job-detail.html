@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>Job Detail – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/student/dashboard"    class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/student/jobs"         class="nav-item active"><i class="fa fa-briefcase"></i> Browse Jobs</a>
+      <a href="/student/applications" class="nav-item"><i class="fa fa-file-alt"></i> My Applications</a>
+      <a href="/student/profile"      class="nav-item"><i class="fa fa-user-circle"></i> Profile &amp; Resume</a>
+      <a href="/student/feedback"     class="nav-item"><i class="fa fa-star"></i> Give Feedback</a>
+      <a href="/logout"               class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><h5>Job Detail</h5></div>
+      <div class="topbar-right"><a href="/student/jobs" class="btn btn-outline btn-sm"><i class="fa fa-arrow-left"></i> Back to Jobs</a></div>
+    </div>
+
+    <div class="page-content">
+      <div th:if="${success}" class="alert alert-success"><i class="fa fa-circle-check"></i> <span th:text="${success}"></span></div>
+      <div th:if="${error}"   class="alert alert-danger"><i class="fa fa-circle-exclamation"></i> <span th:text="${error}"></span></div>
+
+      <div th:if="${job != null}">
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;">
+
+          <!-- Job Details -->
+          <div class="card">
+            <div class="card-body">
+              <!-- Header -->
+              <div class="d-flex align-center gap-3 mb-4">
+                <div class="company-logo" style="width:64px;height:64px;font-size:1.4rem;">
+                  <img th:if="${job.company.logoPath != null}" th:src="@{/uploads/{p}(p=${job.company.logoPath})}" alt="logo" style="width:100%;height:100%;object-fit:cover;border-radius:10px;"/>
+                  <span th:unless="${job.company.logoPath != null}" th:text="${#strings.substring(job.company.companyName,0,1)}"></span>
+                </div>
+                <div>
+                  <h2 style="font-size:1.3rem;margin:0;" th:text="${job.title}"></h2>
+                  <p class="text-muted" th:text="${job.company.companyName}"></p>
+                </div>
+              </div>
+
+              <!-- Meta tags -->
+              <div class="job-meta mb-4" style="gap:14px;">
+                <div class="job-meta-item" th:if="${job.location != null}">
+                  <i class="fa fa-location-dot" style="color:var(--primary);"></i> <span th:text="${job.location}"></span>
+                </div>
+                <div class="job-meta-item" th:if="${job.jobType != null}">
+                  <i class="fa fa-clock" style="color:var(--primary);"></i> <span th:text="${job.jobType}"></span>
+                </div>
+                <div class="job-meta-item" th:if="${job.packageOffered != null}">
+                  <i class="fa fa-indian-rupee-sign" style="color:var(--primary);"></i> <span th:text="${job.packageOffered}"></span>
+                </div>
+                <div class="job-meta-item" th:if="${job.vacancies != null}">
+                  <i class="fa fa-users" style="color:var(--primary);"></i> <span th:text="${job.vacancies}"> vacancies</span>
+                </div>
+                <div class="job-meta-item" th:if="${job.experienceRequired != null}">
+                  <i class="fa fa-star" style="color:var(--primary);"></i> <span th:text="${job.experienceRequired}"></span>
+                </div>
+              </div>
+
+              <hr style="border:none;border-top:1px solid var(--border);margin:20px 0;"/>
+
+              <h4>Job Description</h4>
+              <p style="line-height:1.8;white-space:pre-wrap;" th:text="${job.description}"></p>
+
+              <div th:if="${job.skills != null}" style="margin-top:20px;">
+                <h4>Required Skills</h4>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+                  <span th:each="skill : ${#strings.arraySplit(job.skills, ',')}"
+                        style="background:#f3f4f6;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:.82rem;"
+                        th:text="${skill.trim()}"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Apply Sidebar -->
+          <div>
+            <div class="card" style="position:sticky;top:80px;">
+              <div class="card-header"><h5>Apply Now</h5></div>
+              <div class="card-body">
+                <!-- Already applied -->
+                <div th:if="${hasApplied}" class="alert alert-success" style="margin-bottom:0;">
+                  <i class="fa fa-circle-check"></i> You've already applied!
+                </div>
+
+                <!-- Apply form -->
+                <div th:unless="${hasApplied}">
+                  <div style="font-size:.85rem;margin-bottom:16px;">
+                    <div class="d-flex justify-between mb-2">
+                      <span class="text-muted">Department</span>
+                      <span th:text="${job.department != null ? job.department : 'All'}"></span>
+                    </div>
+                    <div class="d-flex justify-between mb-2">
+                      <span class="text-muted">Min CGPA</span>
+                      <span th:text="${job.minCgpa != null ? job.minCgpa : 'N/A'}"></span>
+                    </div>
+                    <div class="d-flex justify-between mb-2">
+                      <span class="text-muted">Last Date</span>
+                      <strong th:text="${job.lastDateToApply != null ? #temporals.format(job.lastDateToApply,'dd MMM yyyy') : 'Open'}"></strong>
+                    </div>
+                  </div>
+
+                  <form th:action="@{/student/jobs/{id}/apply(id=${job.id})}" method="post">
+                    <div class="form-group">
+                      <label class="form-label">Cover Letter (optional)</label>
+                      <textarea name="coverLetter" class="form-control" rows="4"
+                                placeholder="Tell the HR why you're a good fit..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                      <i class="fa fa-paper-plane"></i> Submit Application
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div th:if="${job == null}" class="text-center" style="padding:60px;">
+        <p class="text-muted">Job not found.</p>
+        <a href="/student/jobs" class="btn btn-outline mt-2">Back to Jobs</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

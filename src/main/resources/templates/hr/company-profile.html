@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>Company Profile – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/hr/dashboard"  class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/hr/jobs"       class="nav-item"><i class="fa fa-briefcase"></i> My Jobs</a>
+      <a href="/hr/jobs/new"   class="nav-item"><i class="fa fa-plus-circle"></i> Post Job</a>
+      <a href="/hr/applicants" class="nav-item"><i class="fa fa-users"></i> Applicants</a>
+      <a href="/hr/company"    class="nav-item active"><i class="fa fa-building"></i> Company Profile</a>
+      <a href="/hr/profile"    class="nav-item"><i class="fa fa-user-circle"></i> Profile</a>
+      <a href="/logout"        class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-left"><h5>Company Profile</h5></div></div>
+    <div class="page-content">
+      <div th:if="${company == null}" class="alert alert-info">
+        <i class="fa fa-info-circle"></i> No company assigned. Contact admin.
+      </div>
+      <div th:if="${company != null}" class="card" style="max-width:640px;">
+        <div class="card-header">
+          <h5>Company Details</h5>
+          <span class="badge badge-active" th:if="${company.active}">Active</span>
+          <span class="badge badge-inactive" th:unless="${company.active}">Inactive</span>
+        </div>
+        <div class="card-body">
+          <!-- Logo + Name (protected from copy/paste/screenshot) -->
+          <div class="d-flex align-center gap-3 mb-4 protected">
+            <div class="company-logo" style="width:72px;height:72px;font-size:1.6rem;">
+              <img th:if="${company.logoPath != null}" th:src="@{/uploads/{p}(p=${company.logoPath})}" alt="logo" style="width:100%;height:100%;object-fit:cover;border-radius:10px;"/>
+              <span th:unless="${company.logoPath != null}" th:text="${#strings.substring(company.companyName,0,1)}"></span>
+            </div>
+            <div>
+              <h3 th:text="${company.companyName}" style="margin:0;"></h3>
+              <p class="text-muted" th:text="${company.industry != null ? company.industry : ''}"></p>
+            </div>
+          </div>
+
+          <div class="form-row cols-2">
+            <div>
+              <div class="text-muted" style="font-size:.8rem;margin-bottom:4px;">Email</div>
+              <div th:text="${company.companyEmail}"></div>
+            </div>
+            <div>
+              <div class="text-muted" style="font-size:.8rem;margin-bottom:4px;">Website</div>
+              <div><a th:href="${company.website}" th:text="${company.website != null ? company.website : '-'}" target="_blank"></a></div>
+            </div>
+          </div>
+
+          <div style="margin-top:18px;">
+            <div class="text-muted" style="font-size:.8rem;margin-bottom:4px;">Address</div>
+            <div th:text="${company.address != null ? company.address : '-'}"></div>
+          </div>
+
+          <div style="margin-top:18px;" th:if="${company.description != null}">
+            <div class="text-muted" style="font-size:.8rem;margin-bottom:4px;">About</div>
+            <div th:text="${company.description}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

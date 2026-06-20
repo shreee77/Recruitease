@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>Edit Company – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/admin/dashboard" class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/admin/hr"        class="nav-item"><i class="fa fa-users"></i> Manage HR</a>
+      <a href="/admin/students"  class="nav-item"><i class="fa fa-user-graduate"></i> Students</a>
+      <a href="/admin/companies" class="nav-item active"><i class="fa fa-building"></i> Companies</a>
+      <a href="/admin/jobs"      class="nav-item"><i class="fa fa-briefcase"></i> Job Postings</a>
+      <a href="/admin/reports"   class="nav-item"><i class="fa fa-chart-bar"></i> Reports</a>
+      <a href="/admin/feedback"  class="nav-item"><i class="fa fa-comments"></i> Feedback</a>
+      <a href="/logout"          class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-left"><h5>Edit Company</h5></div></div>
+    <div class="page-content">
+      <div class="card" style="max-width:640px;">
+        <div class="card-header"><h5>Edit Company Details</h5></div>
+        <div class="card-body">
+          <form th:action="@{/admin/companies/edit/{id}(id=${company.id})}" method="post" enctype="multipart/form-data">
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label">Company Name *</label>
+                <input type="text" name="companyName" class="form-control" th:value="${company.companyName}" required/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Company Email *</label>
+                <input type="email" name="companyEmail" class="form-control" th:value="${company.companyEmail}" required/>
+              </div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label">Industry</label>
+                <input type="text" name="industry" class="form-control" th:value="${company.industry}"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Website</label>
+                <input type="url" name="website" class="form-control" th:value="${company.website}"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Address</label>
+              <input type="text" name="address" class="form-control" th:value="${company.address}"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea name="description" class="form-control" rows="3" th:text="${company.description}"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Logo (leave blank to keep existing)</label>
+              <input type="file" name="logo" class="form-control" accept="image/*"/>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+              <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
+              <a href="/admin/companies" class="btn btn-outline">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

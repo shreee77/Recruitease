@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>Profile – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/admin/dashboard" class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/admin/hr"        class="nav-item"><i class="fa fa-users"></i> Manage HR</a>
+      <a href="/admin/students"  class="nav-item"><i class="fa fa-user-graduate"></i> Students</a>
+      <a href="/admin/companies" class="nav-item"><i class="fa fa-building"></i> Companies</a>
+      <a href="/admin/jobs"      class="nav-item"><i class="fa fa-briefcase"></i> Job Postings</a>
+      <a href="/admin/reports"   class="nav-item"><i class="fa fa-chart-bar"></i> Reports</a>
+      <a href="/admin/feedback"  class="nav-item"><i class="fa fa-comments"></i> Feedback</a>
+      <a href="/admin/profile"   class="nav-item active"><i class="fa fa-user-circle"></i> Profile</a>
+      <a href="/logout"          class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-left"><h5>My Profile</h5></div></div>
+    <div class="page-content">
+      <div class="card" style="max-width:500px;">
+        <div class="card-header"><h5>Admin Profile</h5></div>
+        <div class="card-body">
+          <div style="text-align:center; margin-bottom:24px;">
+            <div style="width:80px;height:80px;background:var(--primary);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;font-weight:800;">A</div>
+          </div>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr><td class="text-muted" style="padding:10px 0;width:40%;">Full Name</td><td><strong th:text="${user != null ? user.fullName : 'Admin'}"></strong></td></tr>
+            <tr><td class="text-muted" style="padding:10px 0;">Email</td><td th:text="${user != null ? user.email : '-'}"></td></tr>
+            <tr><td class="text-muted" style="padding:10px 0;">Role</td><td><span class="badge badge-active">ADMIN</span></td></tr>
+            <tr><td class="text-muted" style="padding:10px 0;">Phone</td><td th:text="${user != null and user.phone != null ? user.phone : '-'}"></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

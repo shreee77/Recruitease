@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>My Jobs – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/hr/dashboard"  class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/hr/jobs"       class="nav-item active"><i class="fa fa-briefcase"></i> My Jobs</a>
+      <a href="/hr/jobs/new"   class="nav-item"><i class="fa fa-plus-circle"></i> Post Job</a>
+      <a href="/hr/applicants" class="nav-item"><i class="fa fa-users"></i> Applicants</a>
+      <a href="/hr/company"    class="nav-item"><i class="fa fa-building"></i> Company Profile</a>
+      <a href="/hr/profile"    class="nav-item"><i class="fa fa-user-circle"></i> Profile</a>
+      <a href="/logout"        class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><h5>My Job Postings</h5></div>
+      <div class="topbar-right"><a href="/hr/jobs/new" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Post New Job</a></div>
+    </div>
+    <div class="page-content">
+      <div th:if="${success}" class="alert alert-success"><i class="fa fa-circle-check"></i> <span th:text="${success}"></span></div>
+      <div class="card">
+        <div class="card-header">
+          <h5>All Jobs (<span th:text="${#lists.size(jobs)}">0</span>)</h5>
+          <a href="/hr/jobs/new" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Post Job</a>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>#</th><th>Title</th><th>Location</th><th>Dept</th><th>Type</th><th>Package</th><th>Vacancies</th><th>Status</th><th>Last Date</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr th:each="j, idx : ${jobs}">
+                  <td th:text="${idx.count}"></td>
+                  <td><strong th:text="${j.title}"></strong></td>
+                  <td th:text="${j.location != null ? j.location : '-'}"></td>
+                  <td th:text="${j.department != null ? j.department : '-'}"></td>
+                  <td th:text="${j.jobType != null ? j.jobType : '-'}"></td>
+                  <td th:text="${j.packageOffered != null ? j.packageOffered : '-'}"></td>
+                  <td th:text="${j.vacancies != null ? j.vacancies : '-'}"></td>
+                  <td><span th:class="${'badge badge-' + j.status.name().toLowerCase()}" th:text="${j.status}"></span></td>
+                  <td th:text="${j.lastDateToApply != null ? #temporals.format(j.lastDateToApply,'dd MMM yyyy') : '-'}"></td>
+                  <td>
+                    <div class="d-flex gap-2">
+                      <a th:href="@{/hr/jobs/edit/{id}(id=${j.id})}" class="btn btn-outline btn-sm"><i class="fa fa-edit"></i></a>
+                      <a th:href="@{/hr/jobs/{id}/applicants(id=${j.id})}" class="btn btn-outline btn-sm"><i class="fa fa-users"></i></a>
+                      <form th:action="@{/hr/jobs/close/{id}(id=${j.id})}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-outline btn-sm" th:if="${j.status.name() == 'ACTIVE'}">Close</button>
+                      </form>
+                      <form th:action="@{/hr/jobs/delete/{id}(id=${j.id})}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm" data-confirm="Delete this job?"><i class="fa fa-trash"></i></button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(jobs)}">
+                  <td colspan="10" class="text-center text-muted" style="padding:32px;">No jobs posted yet. <a href="/hr/jobs/new">Post your first job</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

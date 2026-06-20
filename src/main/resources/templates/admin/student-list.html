@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>Students – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/admin/dashboard" class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/admin/hr"        class="nav-item"><i class="fa fa-users"></i> Manage HR</a>
+      <a href="/admin/students"  class="nav-item active"><i class="fa fa-user-graduate"></i> Students</a>
+      <a href="/admin/companies" class="nav-item"><i class="fa fa-building"></i> Companies</a>
+      <a href="/admin/jobs"      class="nav-item"><i class="fa fa-briefcase"></i> Job Postings</a>
+      <a href="/admin/reports"   class="nav-item"><i class="fa fa-chart-bar"></i> Reports</a>
+      <a href="/admin/feedback"  class="nav-item"><i class="fa fa-comments"></i> Feedback</a>
+      <a href="/logout"          class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-left"><h5>All Students</h5></div></div>
+    <div class="page-content">
+      <div class="card">
+        <div class="card-header">
+          <h5><i class="fa fa-user-graduate" style="color:var(--primary);margin-right:8px;"></i>Registered Students (<span th:text="${#lists.size(students)}">0</span>)</h5>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>#</th><th>Name</th><th>Email</th><th>Branch</th><th>College</th><th>CGPA</th><th>Grad Year</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr th:each="s, idx : ${students}">
+                  <td th:text="${idx.count}"></td>
+                  <td th:text="${s.fullName}"></td>
+                  <td th:text="${s.email}"></td>
+                  <td th:text="${s.branch != null ? s.branch : '-'}"></td>
+                 <!-- <td th:text="${s.collegeName != null ? s.collegeName : '-'}"></td> -->
+                  <td th:text="${s.cgpa != null ? s.cgpa : '-'}"></td>
+                  <td th:text="${s.graduationYear != null ? s.graduationYear : '-'}"></td>
+                  <td><span th:class="${s.active ? 'badge badge-active' : 'badge badge-inactive'}"
+                            th:text="${s.active ? 'Active' : 'Inactive'}"></span></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(students)}">
+                  <td colspan="8" class="text-center text-muted" style="padding:32px;">No students registered yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

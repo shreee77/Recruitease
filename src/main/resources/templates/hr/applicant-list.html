@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>Applicants – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/hr/dashboard"  class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/hr/jobs"       class="nav-item"><i class="fa fa-briefcase"></i> My Jobs</a>
+      <a href="/hr/jobs/new"   class="nav-item"><i class="fa fa-plus-circle"></i> Post Job</a>
+      <a href="/hr/applicants" class="nav-item active"><i class="fa fa-users"></i> Applicants</a>
+      <a href="/hr/company"    class="nav-item"><i class="fa fa-building"></i> Company Profile</a>
+      <a href="/hr/profile"    class="nav-item"><i class="fa fa-user-circle"></i> Profile</a>
+      <a href="/logout"        class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h5 th:text="${job != null ? 'Applicants for: ' + job.title : 'All Applicants'}">Applicants</h5>
+      </div>
+    </div>
+    <div class="page-content">
+      <div th:if="${success}" class="alert alert-success"><i class="fa fa-circle-check"></i> <span th:text="${success}"></span></div>
+
+      <!-- Company name protected from copy -->
+      <div th:if="${job != null}" class="card mb-3" style="border-left:4px solid var(--primary);">
+        <div class="card-body" style="padding:14px 20px;">
+          <strong th:text="${job.title}"></strong>
+          <span class="text-muted"> &mdash; </span>
+          <span class="protected" th:text="${job.company.companyName}"></span>
+          &nbsp;
+          <span th:class="${'badge badge-' + job.status.name().toLowerCase()}" th:text="${job.status}"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h5>Applications (<span th:text="${#lists.size(applications)}">0</span>)</h5>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>#</th><th>Student</th><th>Email</th><th>Branch</th><th>CGPA</th><th>Applied On</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr th:each="app, idx : ${applications}">
+                  <td th:text="${idx.count}"></td>
+                  <td><strong th:text="${app.student.fullName}"></strong></td>
+                  <td th:text="${app.student.email}"></td>
+                  <td th:text="${app.student.branch != null ? app.student.branch : '-'}"></td>
+                  <td th:text="${app.student.cgpa != null ? app.student.cgpa : '-'}"></td>
+                  <td th:text="${#temporals.format(app.appliedAt,'dd MMM yyyy')}"></td>
+                  <td>
+                    <span th:class="${'badge badge-' + app.status.name().toLowerCase().replace('_','-')}"
+                          th:text="${app.status.name().replace('_',' ')}"></span>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-2" style="flex-wrap:wrap;">
+                      <!-- Download Resume -->
+                      <a th:href="@{/hr/resume/download/{id}(id=${app.id})}" class="btn btn-outline btn-sm" th:if="${app.student.resumePath != null}">
+                        <i class="fa fa-download"></i> Resume
+                      </a>
+                      <!-- Chat -->
+                      <a th:href="@{/hr/chat/{id}(id=${app.student.id})}" class="btn btn-outline btn-sm">
+                        <i class="fa fa-comment"></i>
+                      </a>
+                      <!-- Update Status -->
+                      <form th:action="@{/hr/applicants/{id}/status(id=${app.id})}" method="post" style="display:inline;">
+                        <select name="status" class="form-control" style="width:auto;padding:4px 8px;font-size:.8rem;" onchange="this.form.submit()">
+                          <option value="APPLIED"              th:selected="${app.status.name() == 'APPLIED'}">Applied</option>
+                          <option value="UNDER_REVIEW"         th:selected="${app.status.name() == 'UNDER_REVIEW'}">Under Review</option>
+                          <option value="SHORTLISTED"          th:selected="${app.status.name() == 'SHORTLISTED'}">Shortlisted</option>
+                          <option value="INTERVIEW_SCHEDULED"  th:selected="${app.status.name() == 'INTERVIEW_SCHEDULED'}">Interview</option>
+                          <option value="SELECTED"             th:selected="${app.status.name() == 'SELECTED'}">Selected</option>
+                          <option value="REJECTED"             th:selected="${app.status.name() == 'REJECTED'}">Rejected</option>
+                        </select>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(applications)}">
+                  <td colspan="8" class="text-center text-muted" style="padding:32px;">No applications yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

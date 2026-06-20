@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>HR Profile – RecruitEase</title>
+<link rel="stylesheet" th:href="@{/css/style.css}"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/hr/dashboard"  class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/hr/jobs"       class="nav-item"><i class="fa fa-briefcase"></i> My Jobs</a>
+      <a href="/hr/jobs/new"   class="nav-item"><i class="fa fa-plus-circle"></i> Post Job</a>
+      <a href="/hr/applicants" class="nav-item"><i class="fa fa-users"></i> Applicants</a>
+      <a href="/hr/company"    class="nav-item"><i class="fa fa-building"></i> Company Profile</a>
+      <a href="/hr/profile"    class="nav-item active"><i class="fa fa-user-circle"></i> Profile</a>
+      <a href="/logout"        class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-left"><h5>My Profile</h5></div></div>
+    <div class="page-content">
+      <div th:if="${success}" class="alert alert-success"><i class="fa fa-circle-check"></i> <span th:text="${success}"></span></div>
+      <div class="card" style="max-width:560px;">
+        <div class="card-header"><h5>HR Profile</h5></div>
+        <div class="card-body">
+          <form th:action="@{/hr/profile/update}" method="post">
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="fullName" class="form-control" th:value="${hr.fullName}" required/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email (read-only)</label>
+                <input type="text" class="form-control" th:value="${hr.email}" readonly style="background:#f8f9fa;"/>
+              </div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" th:value="${hr.phone}"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Designation</label>
+                <input type="text" name="designation" class="form-control" th:value="${hr.designation}"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Company</label>
+              <input type="text" class="form-control" th:value="${hr.company != null ? hr.company.companyName : '-'}" readonly style="background:#f8f9fa;"/>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2"><i class="fa fa-save"></i> Update Profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

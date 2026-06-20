@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Companies – RecruitEase</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-logo">R</div><span>RecruitEase</span></div>
+    <nav class="sidebar-nav">
+      <a href="/admin/dashboard" class="nav-item"><i class="fa fa-gauge"></i> Dashboard</a>
+      <a href="/admin/hr"        class="nav-item"><i class="fa fa-users"></i> Manage HR</a>
+      <a href="/admin/students"  class="nav-item"><i class="fa fa-user-graduate"></i> Students</a>
+      <a href="/admin/companies" class="nav-item active"><i class="fa fa-building"></i> Companies</a>
+      <a href="/admin/jobs"      class="nav-item"><i class="fa fa-briefcase"></i> Job Postings</a>
+      <a href="/admin/reports"   class="nav-item"><i class="fa fa-chart-bar"></i> Reports</a>
+      <a href="/admin/feedback"  class="nav-item"><i class="fa fa-comments"></i> Feedback</a>
+      <a href="/logout"          class="nav-item"><i class="fa fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left"><h5>Companies</h5></div>
+      <div class="topbar-right"><a href="/admin/companies/add" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add Company</a></div>
+    </div>
+    <div class="page-content">
+      <div th:if="${success}" class="alert alert-success"><i class="fa fa-circle-check"></i> <span th:text="${success}"></span></div>
+      <div class="card">
+        <div class="card-header">
+          <h5><i class="fa fa-building" style="color:var(--primary);margin-right:8px;"></i>All Companies (<span th:text="${#lists.size(companies)}">0</span>)</h5>
+          <a href="/admin/companies/add" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add</a>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>#</th><th>Logo</th><th>Company</th><th>Email</th><th>Industry</th><th>Address</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr th:each="c, idx : ${companies}">
+                  <td th:text="${idx.count}"></td>
+                  <td>
+                    <div class="company-logo">
+                      <img th:if="${c.logoPath != null}" th:src="@{/uploads/{p}(p=${c.logoPath})}" alt="logo"/>
+                      <span th:unless="${c.logoPath != null}" th:text="${#strings.substring(c.companyName,0,1)}"></span>
+                    </div>
+                  </td>
+                  <td><strong th:text="${c.companyName}"></strong></td>
+                  <td th:text="${c.companyEmail}"></td>
+                  <td th:text="${c.industry != null ? c.industry : '-'}"></td>
+                  <td th:text="${c.address != null ? c.address : '-'}"></td>
+                  <td>
+                    <span th:class="${c.active ? 'badge badge-active' : 'badge badge-inactive'}"
+                          th:text="${c.active ? 'Active' : 'Inactive'}"></span>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-2">
+                      <a th:href="@{/admin/companies/edit/{id}(id=${c.id})}" class="btn btn-outline btn-sm"><i class="fa fa-edit"></i></a>
+                      <form th:action="@{/admin/companies/toggle/{id}(id=${c.id})}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-outline btn-sm" th:text="${c.active ? 'Disable' : 'Enable'}"></button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(companies)}">
+                  <td colspan="8" class="text-center text-muted" style="padding:32px;">No companies yet. <a href="/admin/companies/add">Add one</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
